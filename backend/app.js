@@ -1,16 +1,17 @@
 import express from 'express';
 import db from './mongoConnect.js';
+const COLLECTION_NAME = "playlists";
 const app = express()
 const port = 3000
 
-app.get("/getChapters", async (req, res) => {
-    let results = await db.collection("chapters").find({}).toArray()
+app.get("/getPlaylists", async (req, res) => {
+    let results = await db.collection(COLLECTION_NAME).find({}).toArray();
     console.log(results);
     res.send(results).status(200);
   });
 
-app.get("/getChapters/:id", async (req, res) => {
-    let results = await db.collection("chapters").findOne({chapterId: req.params.id})
+app.get("/getPlaylists/:chapterId", async (req, res) => {
+    let results = await db.collection(COLLECTION_NAME).find({chapterId: req.params.chapterId}).toArray();
     console.log(results);
     res.send(results).status(200);
   });
