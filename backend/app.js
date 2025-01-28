@@ -1,8 +1,13 @@
 import express from 'express';
+import cors from 'cors';
 import db from './mongoConnect.js';
+
+
 const COLLECTION_NAME = "playlists";
 const app = express()
 const port = 3000
+
+app.use(cors())
 
 app.get("/getPlaylists", async (req, res) => {
     let results = await db.collection(COLLECTION_NAME).find({}).toArray();

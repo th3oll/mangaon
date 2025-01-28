@@ -1,6 +1,6 @@
+import { MongoClient } from "mongodb";
 import "./loadEnv.js";
 
-import { MongoClient } from "mongodb";
 const connectionString = `mongodb+srv://${process.env.MONGODB_USER}:${process.env.MONGODB_PASSWORD}@cluster0.jmarl.mongodb.net/?retryWrites=true&w=majority&appName=${process.env.MONGODB_CLUSTER}`;
 
 const client = new MongoClient(connectionString);
