@@ -1,0 +1,22 @@
+[
+    {
+        "chapterId":"uuid",
+        "playlistId":"uuid",
+        "playlistName":"string",
+        "playlistDescription":"string",
+        "playlistCreator":"string",
+        "playlistRating":0,
+        "playlistSongs":[
+            {
+                "songName":"string",
+                "songUrl":"string",
+                "startPage":0
+            },
+            {
+                "songName":"string",
+                "songUrl":"string",
+                "startPage":0
+            }
+        ]
+    }
+]
