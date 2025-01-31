@@ -14,10 +14,11 @@ function injectScript(tabId) {
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 
   // check for a URL in the changeInfo parameter (url is only added when it is changed)
-  if (changeInfo.url) {
-      
+  try{  // ignore when url can't be read (i.e. only run on pages with host permission)
+    if (changeInfo.url) {
       // calls the inject function
       injectScript(tabId);
-
-  }
+    }
+  }catch(e) {}
+  
 });

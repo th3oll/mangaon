@@ -1,6 +1,6 @@
 // get chapter id and page number
 (async () => {
-  console.log("Page matched!")
+  console.log("Page changed!")
   url = document.URL
   const substring1 = url.substring(0, (url.lastIndexOf("/")))
   const pageNum = url.substring((url.lastIndexOf("/")+1))
