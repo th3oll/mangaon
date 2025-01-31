@@ -17,14 +17,18 @@
 
   rootDiv.append(chapterIdTextElement)
   rootDiv.append(pageNumTextElement)
+  
 
-  fetch('')
-  .then(res => res.json())
-  .then(data => console.log(data))
+  // fetch('http://10.141.5.33:3000/getPlaylists/242e1c32-5a21-4de7-8816-892a8986153b')
+  // .then(res => res.json())
+  // .then(data => console.log(data))
 
 })();
 
-// async function getPageInfo () {
-  
-// }
-
+function createSoundHtml(){
+  chrome.offscreen.createDocument({
+    url: chrome.runtime.getURL('audio.html'),
+    reasons: ['AUDIO_PLAYBACK'],
+    justification: 'notification',
+  });
+}

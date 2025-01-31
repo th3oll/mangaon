@@ -1,6 +1,6 @@
 {
   "name": "Mangaon",
-  "description": "Base Level Extension",
+  "description": "Chrome web extension to play user-created playlists for Mangas",
   "version": "1.0",
   "manifest_version": 3,
   "action": {
@@ -8,6 +8,22 @@
     "default_icon": "hello_extensions.png"
   },
   "permissions":[
-    "tabs"
+    "tabs",
+    "offscreen",
+    "storage",
+    "scripting"
+  ],
+  "host_permissions": [
+      "https://mangadex.org/chapter/*"
+  ],
+  "background": {
+    "service_worker": "scripts/service-worker.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://mangadex.org/chapter/*"],
+      "js": ["scripts/content.js"]
+    }
   ]
 }
