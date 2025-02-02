@@ -1,22 +1,24 @@
-// get chapter id and page number
 (async () => {
-  const [tab] = await chrome.tabs.query({active: true, lastFocusedWindow: true})
-  const substring1 = tab.url.substring(0, (tab.url.lastIndexOf("/")))
-  const pageNum = tab.url.substring((tab.url.lastIndexOf("/")+1))
-  const chapterId = substring1.substring((substring1.lastIndexOf("/")+1))
 
   const rootDiv = document.getElementById("root_div");
   // const elements = new Set();
 
-  const chapterIdTextElement = document.createElement("p")
-  chapterIdTextElement.innerText = "Chapter ID: " + chapterId
+  // get current reading info from storage
+  const result = await chrome.storage.local.get(["currentReading"])
+  console.log(result)
+  const currentReading = result.currentReading
+  console.log(currentReading)
 
 
-  const pageNumTextElement = document.createElement("p")
-  pageNumTextElement.innerText = "Page: " + pageNum
+  const mangaNameTextElement = document.createElement("h2")
+  mangaNameTextElement.innerText = currentReading.title
 
-  rootDiv.append(chapterIdTextElement)
-  rootDiv.append(pageNumTextElement)
+  const chapterTextElement = document.createElement("p")
+  chapterTextElement.innerText = `${currentReading.chapter} / P. ${currentReading.pageNum}`
+
+  rootDiv.append(mangaNameTextElement)
+  rootDiv.append(chapterTextElement)
+  
   
 
   // fetch('http://10.141.5.33:3000/getPlaylists/242e1c32-5a21-4de7-8816-892a8986153b')

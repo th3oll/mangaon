@@ -1,24 +1,31 @@
-// function that injects code to a specific tab
-function injectScript(tabId) {
+console.log("sw-urlchange")
 
-  chrome.scripting.executeScript(
-      {
-          target: {tabId: tabId},
-          files: ['scripts/page-change.js'],
-      }
-  );
-
-}
-
-// adds a listener to tab change
+// inject page-change content script to tab when url is changed
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-
-  // check for a URL in the changeInfo parameter (url is only added when it is changed)
-  try{  // ignore when url can't be read (i.e. only run on pages with host permission)
-    if (changeInfo.url) {
-      // calls the inject function
-      injectScript(tabId);
+  // only when url is changed on a chapter page
+  if (changeInfo.url) { 
+    if(changeInfo.url.match("mangadex.org/chapter")){
+      chrome.scripting.executeScript(
+        {
+            target: {tabId: tabId},
+            files: ['scripts/page-change.js'],
+        }
+      );
     }
-  }catch(e) {}
-  
+  }
 });
+
+// get manga name and chapter from content script
+// chrome.runtime.onMessage.addListener(
+//   function(request, sender, sendResponse) {
+//     // console.log(sender.tab ?
+//     //             "from a content script:" + sender.tab.url :
+//     //             "from the extension")
+//     sendResponse({accepted: "sw-urlchange"})
+
+//     // store current reading info in local storage
+//     chrome.storage.local.set({ currentReading: request })
+//     .then(console.log("storage set!"))
+//   }
+  
+// );
