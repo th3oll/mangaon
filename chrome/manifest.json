@@ -11,7 +11,8 @@
     "tabs",
     "offscreen",
     "storage",
-    "scripting"
+    "scripting",
+    "identity"
   ],
   "host_permissions": [
       "https://mangadex.org/chapter/*"
