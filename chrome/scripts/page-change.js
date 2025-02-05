@@ -14,6 +14,8 @@
   const title = document.querySelector('.reader--header-manga').innerHTML
   const chapter = document.querySelector('.reader--header-title').innerHTML
 
+  // await chrome.storage.local.get()
+
   const currentReading = {
     title: title,
     chapter: chapter,
@@ -21,15 +23,30 @@
     pageNum: pageNum
   }
 
-  // send current reading info to service worker
-  // const response = await chrome.runtime.sendMessage(currentReading);
-  // console.log(response);
-
+  // get old reading info
+  const result = await chrome.storage.local.get(["currentReading"])
+  const lastCurrentReading = result.currentReading
+  
   // store current reading info in local storage
   await chrome.storage.local.set({ currentReading: currentReading })
+
+  // if new chapter started, get new playlist
+  if(lastCurrentReading.chapterId !== currentReading.chapterId) {
+    console.log("Chapter change")
+    // fetch("")
+    // .then(res => res.json())
+    // .then(data => {
+    //   console.log(data)
+    // })
+  }
+  else {
+    const result = await chrome.storage.local.get(["currentPlaylist"])
+    const playlist = result.currentPlaylist
+  }
   
-  // fetch('http://10.141.5.33:3000/getPlaylists/242e1c32-5a21-4de7-8816-892a8986153b')
-  // .then(res => res.json())
-  // .then(data => console.log(data))
+  // switch song if at a checkpoint
+  if(false) {
+    console.log("switch song")
+  }
 
 })();

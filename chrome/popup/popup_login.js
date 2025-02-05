@@ -11,7 +11,8 @@ loginButton.onclick = spotifyLogin
  */
 
 const clientId = 'd55c5232e8314566b049513880278f25'; // your clientId
-const redirectUrl = 'chrome-extension://pkidmepdbeebekgibehcihcifjjmejjd/popup/popup_login.htmlx';        // your redirect URL - must be localhost URL and/or HTTPS
+// const redirectUrl = 'chrome-extension://pkidmepdbeebekgibehcihcifjjmejjd/popup/popup_login.htmlx';        // your redirect URL - must be localhost URL and/or HTTPS
+const redirectUrl = chrome.identity.getRedirectURL()
 console.log(redirectUrl)
 const authorizationEndpoint = "https://accounts.spotify.com/authorize";
 const tokenEndpoint = "https://accounts.spotify.com/api/token";
@@ -53,7 +54,7 @@ if (code) {
   window.history.replaceState({}, document.title, updatedUrl);
 }
 
-async function redirectToSpotifyAuthorize() {
+async function getAuthURL () {
   const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   const randomValues = crypto.getRandomValues(new Uint8Array(64));
   const randomString = randomValues.reduce((acc, x) => acc + possible[x % possible.length], "");
@@ -80,7 +81,12 @@ async function redirectToSpotifyAuthorize() {
   };
 
   authUrl.search = new URLSearchParams(params).toString();
-  chrome.tabs.create({url: authUrl.toString()}); // Redirect the user to the authorization server for login
+  return authUrl.toString()
+}
+
+async function redirectToSpotifyAuthorize() {
+  const authURL = await getAuthURL()
+  chrome.tabs.create({url: authURL}); // Redirect the user to the authorization server for login
 }
 
 // Soptify API Calls
@@ -149,5 +155,26 @@ async function refreshTokenClick() {
  */
 async function spotifyLogin() {
   console.log("login")
-  await redirectToSpotifyAuthorize();
+  // await redirectToSpotifyAuthorize();
+  loginWithChromeIdentity()
+}
+
+
+// use chrome.identity
+async function loginWithChromeIdentity() {
+  const authURL = await getAuthURL()
+  return chrome.identity.launchWebAuthFlow(
+    {
+      interactive: true,
+      url: authURL,
+    },
+    responseURL => resolve(responseURL)
+  );
+}
+
+// retrieve auth tokens from response URL
+function resolve(responseURL) {
+  console.log(responseURL)
+  // chrome.storage.local.set()
+  
 }

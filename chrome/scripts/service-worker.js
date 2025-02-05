@@ -1,2 +1,2 @@
 import './sw-urlchange.js'
-import './sw-spotifylogin.js'
+import './sw-loginstatus.js'
