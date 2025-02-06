@@ -30,6 +30,9 @@ const currentToken = {
     localStorage.setItem('access_token', access_token);
     localStorage.setItem('refresh_token', refresh_token);
     localStorage.setItem('expires_in', expires_in);
+    chrome.storage.local.set({
+      access_token: access_token
+    })
 
     const now = new Date();
     const expiry = new Date(now.getTime() + (expires_in * 1000));
@@ -131,6 +134,7 @@ async function resolve(responseURL) {
   // On page load, try to fetch auth code from responseUrl string
   const uu = new URL(responseURL);
   const code = uu.searchParams.get("code");
+  console.log(code)
 
   // If we find a code, we're in a callback, do a token exchange
   const token = await getToken(code);

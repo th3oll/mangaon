@@ -1,3 +1,26 @@
+// play a track through spotify api
+async function play (trackId, offset) {
+  // const token = localStorage.getItem("access_token")
+  const result = await chrome.storage.local.get("access_token")
+  console.log(result)
+  token = result.access_token
+  console.log(token)
+
+  fetch('https://api.spotify.com/v1/me/player/play',{
+    method:"PUT",
+    body:{
+      uris: trackId,
+      position_ms: offset
+    },
+    headers:{
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + token
+    }
+  })
+  .then(res => res.json())
+  .then(data => console.log(data))
+}
+
 // get chapter id and page number
 // (content script)
 (async () => {
@@ -33,17 +56,22 @@
   // if new chapter started, get new playlist
   if(lastCurrentReading.chapterId !== currentReading.chapterId) {
     console.log("Chapter change")
-    // fetch("")
-    // .then(res => res.json())
-    // .then(data => {
-    //   console.log(data)
-    // })
+    const res = await fetch('http://localhost:3000/getPlaylists/242e1c32-5a21-4de7-8816-892a8986153b')
+    const data = await res.json()
+    console.log(data)
+    const playlist = data[0]
+    await chrome.storage.local.set({
+      currentPlaylist: playlist
+    })
   }
   else {
     const result = await chrome.storage.local.get(["currentPlaylist"])
     const playlist = result.currentPlaylist
+    console.log(playlist)
   }
   
+  play("2vb6W84Ou6fYJACj5fXZPK", 0)
+
   // switch song if at a checkpoint
   if(false) {
     console.log("switch song")
