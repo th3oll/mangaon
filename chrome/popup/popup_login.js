@@ -140,4 +140,7 @@ async function resolve(responseURL) {
   // Remove code from URL so we can refresh correctly.
   const url = new URL(responseURL);
   url.searchParams.delete("code");
+
+  chrome.action.setPopup({popup: 'popup/popup.html'});
+  window.close()
 }
