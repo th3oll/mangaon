@@ -141,6 +141,10 @@ async function resolve(responseURL) {
   const url = new URL(responseURL);
   url.searchParams.delete("code");
 
+  await chrome.storage.local.set({
+    spotify_signed_in: true
+  })
+
   chrome.action.setPopup({popup: 'popup/popup.html'});
   window.close()
 }
