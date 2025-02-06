@@ -1,7 +1,43 @@
+const currentToken = {
+  get access_token() { return localStorage.getItem('access_token') || null; },
+  get refresh_token() { return localStorage.getItem('refresh_token') || null; },
+  get expires_in() { return localStorage.getItem('refresh_in') || null },
+  get expires() { return localStorage.getItem('expires') || null },
+
+  save: function (response) {
+    const { access_token, refresh_token, expires_in } = response;
+    localStorage.setItem('access_token', access_token);
+    localStorage.setItem('refresh_token', refresh_token);
+    localStorage.setItem('expires_in', expires_in);
+
+    const now = new Date();
+    const expiry = new Date(now.getTime() + (expires_in * 1000));
+    localStorage.setItem('expires', expiry);
+  }
+};
+
+
+async function getUserData() {
+  const response = await fetch("https://api.spotify.com/v1/me", {
+    method: 'GET',
+    headers: { 'Authorization': 'Bearer ' + currentToken.access_token },
+  });
+
+  return await response.json();
+}
+
+// Button clicks
+async function logoutClick() {
+  localStorage.clear();
+  chrome.action.setPopup({popup: 'popup/popup_login.html'});
+  window.close();
+}
+
+document.getElementById('logout_button').addEventListener('click', logoutClick);
+
 (async () => {
 
   const rootDiv = document.getElementById("root_div");
-  // const elements = new Set();
 
   // get current reading info from storage
   const result = await chrome.storage.local.get(["currentReading"])
@@ -18,19 +54,20 @@
 
   rootDiv.append(mangaNameTextElement)
   rootDiv.append(chapterTextElement)
-  
-  
 
-  // fetch('http://10.141.5.33:3000/getPlaylists/242e1c32-5a21-4de7-8816-892a8986153b')
-  // .then(res => res.json())
-  // .then(data => console.log(data))
+  const data = await getUserData();
 
+  console.log(data)
+
+  const userDiv = document.getElementById("user_div")
+
+  const userTextElement = document.createElement("h3")
+  userTextElement.innerText = `Logged in as ${data.display_name}`
+  userDiv.prepend(userTextElement)
+
+  const userImageElement = document.createElement("img")
+  userImageElement.src = data.images[0].url
+  userImageElement.width = 100
+  userImageElement.height = 100
+  userDiv.prepend(userImageElement)
 })();
-
-function createSoundHtml(){
-  chrome.offscreen.createDocument({
-    url: chrome.runtime.getURL('audio.html'),
-    reasons: ['AUDIO_PLAYBACK'],
-    justification: 'notification',
-  });
-}

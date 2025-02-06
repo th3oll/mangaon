@@ -1,6 +1,6 @@
 .button-login {
-  background-color: green;
-  padding: 20;
-  
-
+  background-color: #1db954;
+  padding: 4px;
+  border: 1px solid #000000;
+  border-radius: 16px;
 }
