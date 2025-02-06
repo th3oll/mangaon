@@ -37,22 +37,6 @@ const currentToken = {
   }
 };
 
-// On page load, try to fetch auth code from current browser search URL
-const args = new URLSearchParams(window.location.search);
-const code = args.get('code');
-
-// If we find a code, we're in a callback, do a token exchange
-if (code) {
-  const token = await getToken(code);
-  currentToken.save(token);
-
-  // Remove code from URL so we can refresh correctly.
-  const url = new URL(window.location.href);
-  url.searchParams.delete("code");
-
-  const updatedUrl = url.search ? url.href : url.href.replace('?', '');
-  window.history.replaceState({}, document.title, updatedUrl);
-}
 
 async function getAuthURL () {
   const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -82,11 +66,6 @@ async function getAuthURL () {
 
   authUrl.search = new URLSearchParams(params).toString();
   return authUrl.toString()
-}
-
-async function redirectToSpotifyAuthorize() {
-  const authURL = await getAuthURL()
-  chrome.tabs.create({url: authURL}); // Redirect the user to the authorization server for login
 }
 
 // Soptify API Calls
@@ -126,36 +105,11 @@ async function refreshToken() {
   return await response.json();
 }
 
-async function getUserData() {
-  const response = await fetch("https://api.spotify.com/v1/me", {
-    method: 'GET',
-    headers: { 'Authorization': 'Bearer ' + currentToken.access_token },
-  });
-
-  return await response.json();
-}
-
-// Click handlers
-async function loginWithSpotifyClick() {
-  await redirectToSpotifyAuthorize();
-}
-
-async function logoutClick() {
-  localStorage.clear();
-  window.location.href = redirectUrl;
-}
-
-async function refreshTokenClick() {
-  const token = await refreshToken();
-  currentToken.save(token);
-}
-
 /**
  * Function called by the login button
  */
 async function spotifyLogin() {
   console.log("login")
-  // await redirectToSpotifyAuthorize();
   loginWithChromeIdentity()
 }
 
@@ -173,8 +127,17 @@ async function loginWithChromeIdentity() {
 }
 
 // retrieve auth tokens from response URL
-function resolve(responseURL) {
-  console.log(responseURL)
-  // chrome.storage.local.set()
-  
+async function resolve(responseURL) {
+  // On page load, try to fetch auth code from responseUrl string
+  const uu = new URL(responseURL);
+  const code = uu.searchParams.get("code");
+
+  // If we find a code, we're in a callback, do a token exchange
+  const token = await getToken(code);
+  currentToken.save(token);
+  console.log(token)
+
+  // Remove code from URL so we can refresh correctly.
+  const url = new URL(responseURL);
+  url.searchParams.delete("code");
 }
