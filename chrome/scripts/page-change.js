@@ -8,10 +8,10 @@ async function play (trackId, offset) {
 
   fetch('https://api.spotify.com/v1/me/player/play',{
     method:"PUT",
-    body:{
-      uris: trackId,
+    body:JSON.stringify({
+      uris: [trackId],
       position_ms: offset
-    },
+    }),
     headers:{
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ' + token
@@ -70,7 +70,8 @@ async function play (trackId, offset) {
     console.log(playlist)
   }
   
-  play("2vb6W84Ou6fYJACj5fXZPK", 0)
+  // TODO: Set active device before calling play function
+  play("spotify:track:2vb6W84Ou6fYJACj5fXZPK", 0)
 
   // switch song if at a checkpoint
   if(false) {
