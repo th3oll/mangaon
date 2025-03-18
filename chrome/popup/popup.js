@@ -35,6 +35,19 @@ async function logoutClick() {
 
 document.getElementById('logout_button').addEventListener('click', logoutClick);
 
+async function sidepanelClick() {
+  console.log("sidepanelClick")
+  // get the current tab
+  let queryOptions = { active: true, lastFocusedWindow: true };
+    // `tab` will either be a `tabs.Tab` instance or `undefined`.
+    let [tab] = await chrome.tabs.query(queryOptions);
+  chrome.sidePanel.open(
+    { tabId: tab.id }
+  )
+}
+
+document.getElementById('sidebar_button').addEventListener('click', sidepanelClick);
+
 (async () => {
 
   const rootDiv = document.getElementById("root_div");
