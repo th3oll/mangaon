@@ -1,22 +1,21 @@
-[
-    {
-        "chapterId":"uuid",
-        "playlistId":"uuid",
-        "playlistName":"string",
-        "playlistDescription":"string",
-        "playlistCreator":"string",
-        "playlistRating":0,
-        "playlistSongs":[
-            {
-                "songName":"string",
-                "songUrl":"string",
-                "startPage":0
-            },
-            {
-                "songName":"string",
-                "songUrl":"string",
-                "startPage":0
-            }
-        ]
-    }
-]
+{
+    "chapterId": "uuid",
+    "creator": "string",
+    "description": "string",
+    "name": "string",
+    "rating": 0,
+    "songs": [
+      {
+        "startPage": 0,
+        "id": "string",
+        "name": "string",
+        "startTime": 0
+      },
+      {
+        "startPage": 0,
+        "id": "string",
+        "name": "string",
+        "startTime": 0
+      }
+    ]
+  }
