@@ -17,4 +17,16 @@
   rootDiv.append(mangaNameTextElement)
   rootDiv.append(chapterTextElement)
 
+  // layout for creating a playlist
+  const createPlaylistButton = document.createElement("button")
+  createPlaylistButton.innerText = "Create Playlist"
+  rootDiv.append(createPlaylistButton)
+
+  // layout for adding a song to the playlist
+  // browse a song from spotify
+  const addSongButton = document.createElement("button")
+  addSongButton.innerText = "Add Song"
+  rootDiv.append(addSongButton)
+  
+
 })();

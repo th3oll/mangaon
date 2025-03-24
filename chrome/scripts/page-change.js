@@ -56,26 +56,62 @@ async function play (trackId, offset) {
   // if new chapter started, get new playlist
   if(lastCurrentReading.chapterId !== currentReading.chapterId) {
     console.log("Chapter change")
-    const res = await fetch('http://localhost:3000/getPlaylists/242e1c32-5a21-4de7-8816-892a8986153b')
-    const data = await res.json()
-    console.log(data)
-    const playlist = data[0]
-    await chrome.storage.local.set({
-      currentPlaylist: playlist
-    })
+    // const res = await fetch('http://192.168.0.240:3000/getPlaylists/242e1c32-5a21-4de7-8816-892a8986153b')
+
+    // send a message to the background script to get the current playlist
+
+      const response = await chrome.runtime.sendMessage({message: "chapterChange"});
+      console.log(response);
+      const playlist = response.playlist
+      console.log(playlist)
+      
+      await chrome.storage.local.set({
+        currentPlaylist: playlist
+      })
+
+    
+
+    // find the first song in the playlist that starts before the current page
+    let currentSongIndex = -1
+    for (let i = 0; i < playlist.songs.length; i++) {
+      if (playlist.songs[i].startPage > pageNum) {
+        currentSongIndex = i - 1
+        await chrome.storage.local.set({
+          currentSongIndex: i - 1
+        })
+        break
+      }
+    }
+
+    if(currentSongIndex > -1) {
+      play(playlist.songs[currentSongIndex].id, 0)
+    }
+
   }
+
+  // if still in the same chapter, get the current playlist
   else {
     const result = await chrome.storage.local.get(["currentPlaylist"])
     const playlist = result.currentPlaylist
     console.log(playlist)
+
+    // get the index of the current song in the playlist
+    result = await chrome.storage.local.get(["currentSongIndex"])
+    const currentSongIndex = result.currentSongIndex
+
+    // switch song if at a checkpoint
+    if(currentSongIndex < playlist.songs.length - 1 && pageNum >= playlist.songs[currentSongIndex + 1].startPage) {
+      console.log("switch song")
+      play(playlist.songs[currentSongIndex + 1].id, 0)
+      await chrome.storage.local.set({
+        currentSongIndex: currentSongIndex + 1
+      })
+    }
   }
   
   // TODO: Set active device before calling play function
-  play("spotify:track:2vb6W84Ou6fYJACj5fXZPK", 0)
+  // play("spotify:track:2vb6W84Ou6fYJACj5fXZPK", 0)
 
-  // switch song if at a checkpoint
-  if(false) {
-    console.log("switch song")
-  }
+
 
 })();
