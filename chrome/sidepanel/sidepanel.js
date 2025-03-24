@@ -1,0 +1,20 @@
+
+(async () => {
+  const rootDiv = document.getElementById("root_div");
+
+  // get current reading info from storage
+  const result = await chrome.storage.local.get(["currentReading"])
+  console.log(result)
+  const currentReading = result.currentReading
+  console.log(currentReading)
+
+  const mangaNameTextElement = document.createElement("h2")
+  mangaNameTextElement.innerText = currentReading.title
+
+  const chapterTextElement = document.createElement("p")
+  chapterTextElement.innerText = `${currentReading.chapter} / P. ${currentReading.pageNum}`
+
+  rootDiv.append(mangaNameTextElement)
+  rootDiv.append(chapterTextElement)
+
+})();
