@@ -6,6 +6,39 @@ async function play (trackId, offset) {
   token = result.access_token
   console.log(token)
 
+  // Check if user has a active device
+  const res = await fetch('https://api.spotify.com/v1/me/player/devices', {
+    method: "GET",
+    headers: {
+      'Authorization': 'Bearer ' + token
+    }
+  });
+
+  const data = await res.json();
+  const activeDevice = data.devices.find(device => device.is_active === true);
+  if (!activeDevice) {
+    // Try to grab the first computer device if no active device is found
+    const firstComputerDevice = data.devices.find(device => device.type.toLowerCase() === 'computer');
+    if (firstComputerDevice) {
+      console.log("No active device found, using first computer device");
+      await fetch(`https://api.spotify.com/v1/me/player`, {
+        method: "PUT",
+        headers: {
+          'Authorization': 'Bearer ' + token,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ device_ids: [firstComputerDevice.id] })
+      });
+      // Sleep for a second to allow the device to become active
+      await new Promise(resolve => setTimeout(resolve, 500));
+    } else {
+      console.error("No active device found");
+      return;
+    }
+  }
+  console.log(data)
+      
+
   fetch('https://api.spotify.com/v1/me/player/play',{
     method:"PUT",
     body:JSON.stringify({

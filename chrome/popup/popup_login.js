@@ -16,7 +16,7 @@ const redirectUrl = chrome.identity.getRedirectURL()
 console.log(redirectUrl)
 const authorizationEndpoint = "https://accounts.spotify.com/authorize";
 const tokenEndpoint = "https://accounts.spotify.com/api/token";
-const scope = 'user-read-private user-read-email streaming app-remote-control';
+const scope = 'user-read-private user-read-email streaming app-remote-control user-read-playback-state user-modify-playback-state';
 
 // Data structure that manages the current active token, caching it in localStorage
 const currentToken = {
