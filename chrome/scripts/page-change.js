@@ -96,8 +96,11 @@ async function play (trackId, offset) {
     console.log(playlist)
 
     // get the index of the current song in the playlist
-    result = await chrome.storage.local.get(["currentSongIndex"])
-    const currentSongIndex = result.currentSongIndex
+
+    const result1 = await chrome.storage.local.get(["currentSongIndex"])
+    console.log(result1)
+    const currentSongIndex = result1.currentSongIndex
+    console.log(currentSongIndex)
 
     // switch song if at a checkpoint
     if(currentSongIndex < playlist.songs.length - 1 && pageNum >= playlist.songs[currentSongIndex + 1].startPage) {
